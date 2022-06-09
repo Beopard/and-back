@@ -18,12 +18,12 @@ public interface PostMapper {
     public List<Post> selectAllPostsOrderByTime();
 
     //    게시글 검색
-    @Select("select * from post where title like '%'||#{title}||'%'")
+    @Select("select * from post where title like #{title}")
     public List<Post> selectPostsByTitle(String title);
 
     //    게시글 등록
     @Insert("insert into post(title, contents, password)  values(#{title},#{contents},#{password})")
-    public void insertPost(Post post);
+    public void insertPost(String title, String contents, String password);
 
     //    게시글 수정
     @Update("update post set title = #{title}, contents = #{contents} where post_id = #{post_id}")

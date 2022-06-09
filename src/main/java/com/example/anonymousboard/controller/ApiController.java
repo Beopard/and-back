@@ -36,9 +36,9 @@ public class ApiController {
     }
 
     // 게시글 검색
-    @GetMapping("/postsTitle")
-    public List<Post> getPostsByTitle(@RequestParam String title) {
-        return postMapper.selectPostsByTitle(title);
+    @GetMapping("/postSearch")
+    public List<Post> getPostsBySearch(@RequestParam String title) {
+        return postMapper.selectPostsByTitle("%" + title + "%");
     }
 
     // 게시글조회
@@ -49,8 +49,10 @@ public class ApiController {
 
     // 게시글등록
     @PostMapping("/post")
-    public void insertPost(@RequestBody Post post) {
-        postMapper.insertPost(post);
+    public void insertPost(@RequestParam String title,
+                           @RequestParam String contents,
+                           @RequestParam String password) {
+         postMapper.insertPost(title, contents, password);
     }
 
     // 게시글수정
