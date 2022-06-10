@@ -15,10 +15,10 @@ public interface PostMapper {
 
     //    전체 게시글 조회(조회수 순)
     @Select("select * from post order by views desc")
-    public List<Post> selectAllPostsOrderByTime();
+    public List<Post> selectAllPostsOrderByViews();
 
     //    게시글 검색
-    @Select("select * from post where title like #{title}")
+    @Select("select * from post where title like #{title} order by created_time desc")
     public List<Post> selectPostsByTitle(String title);
 
     //    게시글 등록
@@ -27,7 +27,7 @@ public interface PostMapper {
 
     //    게시글 수정
     @Update("update post set title = #{title}, contents = #{contents} where post_id = #{post_id}")
-    public void updatePost(Post post);
+    public void updatePost(String post_id, String title, String contents);
 
     //    게시글 삭제
     @Delete("delete from post where post_id=#{post_id}")
@@ -36,5 +36,10 @@ public interface PostMapper {
     //    게시글 조회
     @Select("select * from post where post_id=#{post_id}")
     public Post selectPost(String post_id);
+
+    //    조회수 증가
+    @Update("update post set views = views+1 where post_id = #{post_id}")
+    public void updateViews(String post_id);
+
 
 }
