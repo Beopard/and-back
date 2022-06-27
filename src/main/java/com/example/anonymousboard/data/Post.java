@@ -14,6 +14,9 @@ public class Post {
     String contents;
     String created_time;
     String views;
-    String password;
+    String user_id;
+    String pro_views;
+    String recommends;
+    String name;
 
 }

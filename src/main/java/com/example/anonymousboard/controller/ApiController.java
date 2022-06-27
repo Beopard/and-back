@@ -1,8 +1,10 @@
 package com.example.anonymousboard.controller;
 
 import com.example.anonymousboard.data.Post;
+import com.example.anonymousboard.data.Users;
 import com.example.anonymousboard.mapper.PostMapper;
-import org.apache.ibatis.annotations.Delete;
+import com.example.anonymousboard.mapper.UserMapper;
+import org.apache.catalina.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,9 +15,12 @@ public class ApiController {
 
     final
     PostMapper postMapper;
+    final
+    UserMapper userMapper;
 
-    public ApiController(PostMapper postMapper) {
+    public ApiController(PostMapper postMapper, UserMapper userMapper) {
         this.postMapper = postMapper;
+        this.userMapper = userMapper;
     }
 
     @GetMapping("/")
@@ -35,47 +40,60 @@ public class ApiController {
         return postMapper.selectAllPostsOrderByViews();
     }
 
-    // 게시글 검색
-    @GetMapping("/postSearch")
-    public List<Post> getPostsBySearch(@RequestParam String title) {
-        return postMapper.selectPostsByTitle("%" + title + "%");
-    }
 
     // 게시글조회
-    @GetMapping("/post/{post_id}")
-    public Post getpost(@PathVariable("post_id") String post_id) {
-        postMapper.updateViews(post_id);
+    @GetMapping("/posts/{post_id}")
+    public Post getpost(@PathVariable("post_id") String post_id,
+                        @RequestParam("user_id") String user_id) {
+        Users user = userMapper.selectUserByName(user_id);
+        if(user.getRole().equals("전문가")){
+            postMapper.updateProViews(post_id);
+        }else{
+            postMapper.updateViews(post_id);
+        }
         return postMapper.selectPost(post_id);
+    }
+
+    //추천증가
+    @PutMapping("/post/{post_id}")
+    public void updateRecommends(@PathVariable("post_id") String post_id){
+        postMapper.updateRecommends(post_id);
     }
 
     // 게시글등록
     @PostMapping("/post")
     public String insertPost(@RequestParam String title,
                            @RequestParam String contents,
-                           @RequestParam String password) {
-         postMapper.insertPost(title, contents, password);
+                           @RequestParam String user_id) {
+        Users user = userMapper.selectUserByName(user_id);
+        System.out.println(user);
+         postMapper.insertPost(title, contents, user.getUser_id());
          return "등록성공";
     }
 
-    // 게시글수정
-    @PutMapping("/post/{post_id}")
-    public String updatePost(@PathVariable("post_id") String post_id,
-                             @RequestParam String title,
-                             @RequestParam String contents) {
-        postMapper.updatePost(post_id, title, contents);
-        return "수정성공";
-
-    }
 
     // 게시글삭제
     @DeleteMapping("post/{post_id}")
-    public String deletePost(@PathVariable("post_id") String post_id,
-                           @RequestParam String password) {
-        if (postMapper.selectPost(post_id).getPassword().equals(password)) {
-            postMapper.deletePost(post_id);
-            return "삭제성공";
+    public String deletePost(@PathVariable("post_id") String post_id)
+                            {
+        postMapper.deletePost(post_id);
+        return "삭제성공";
+    }
+
+    @GetMapping("/login")
+    public String login(@RequestParam String user_id,
+                        @RequestParam String password){
+        Users user = userMapper.selectUser(user_id);
+
+        if(user.getPassword().equals(password)){
+            return user.getName();
+        }else{
+            return null;
         }
-        return "삭제실패";
+    }
+    @GetMapping("/users")
+    public List<Users> users(){
+        return userMapper.selectAllUsers();
     }
 
 }

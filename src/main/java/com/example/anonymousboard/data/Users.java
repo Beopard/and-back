@@ -11,5 +11,7 @@ public class Users {
 
     String user_id;
     String password;
+    String role;
+    String name;
 
 }
