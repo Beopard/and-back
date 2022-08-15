@@ -1,8 +1,11 @@
 package com.example.anonymousboard.controller;
 
+import com.example.anonymousboard.data.Order;
 import com.example.anonymousboard.data.Post;
+import com.example.anonymousboard.mapper.OrderMapper;
 import com.example.anonymousboard.mapper.PostMapper;
 import org.apache.ibatis.annotations.Delete;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +16,9 @@ public class ApiController {
 
     final
     PostMapper postMapper;
+
+    @Autowired
+    OrderMapper orderMapper;
 
     public ApiController(PostMapper postMapper) {
         this.postMapper = postMapper;
@@ -76,6 +82,12 @@ public class ApiController {
             return "삭제성공";
         }
         return "삭제실패";
+    }
+
+    /*Order Controller*/
+    @GetMapping("duser/orders")
+    public List<Order> getOrders(){
+        return orderMapper.selectAllOrders();
     }
 
 }
