@@ -10,18 +10,21 @@ import lombok.NoArgsConstructor;
 public class Order {
 
     String ord_id;
-    String user_id;
-    String ord_amount;
-    String keep_status;
-    String entrust_time;
-    String withdraw_time;
-    String keep_start;
-    String keep_end;
-    String delivery_id;
-    String call_time;
-    String status;
-    String pay_id;
-    String ord_selection;
+    String distance;
+    String start_time;
+    String distance_from_me;
+    String start_place;
+    String end_place;
+    String end_time;
+    String size;
+    String count;
+    String weight;
+    String price;
     String ord_request;
-
+    String status;
+    String start_place_detail;
+    String end_place_detail;
+    String start_time_detail;
+    String end_time_detail;
+    String info;
 }

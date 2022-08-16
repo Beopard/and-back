@@ -57,10 +57,10 @@ public class ApiController {
     // 게시글등록
     @PostMapping("/post")
     public String insertPost(@RequestParam String title,
-                           @RequestParam String contents,
-                           @RequestParam String password) {
-         postMapper.insertPost(title, contents, password);
-         return "등록성공";
+                             @RequestParam String contents,
+                             @RequestParam String password) {
+        postMapper.insertPost(title, contents, password);
+        return "등록성공";
     }
 
     // 게시글수정
@@ -76,7 +76,7 @@ public class ApiController {
     // 게시글삭제
     @DeleteMapping("post/{post_id}")
     public String deletePost(@PathVariable("post_id") String post_id,
-                           @RequestParam String password) {
+                             @RequestParam String password) {
         if (postMapper.selectPost(post_id).getPassword().equals(password)) {
             postMapper.deletePost(post_id);
             return "삭제성공";
@@ -85,9 +85,50 @@ public class ApiController {
     }
 
     /*Order Controller*/
-    @GetMapping("duser/orders")
-    public List<Order> getOrders(){
-        return orderMapper.selectAllOrders();
+
+    @GetMapping("/duser/{ord_id}")
+    public Order getOrder(@PathVariable("ord_id") String ord_id) {
+        System.out.println(ord_id);
+        System.out.println(orderMapper.selectOrder(ord_id));
+        return orderMapper.selectOrder(ord_id);
+    }
+
+
+    @GetMapping("/duser/orders1")
+    public List<Order> getOrders1() {
+        return orderMapper.selectAllOrders1();
+    }
+
+    @GetMapping("/duser/orders2")
+    public List<Order> getOrders2() {
+        return orderMapper.selectAllOrders2();
+    }
+
+    @GetMapping("/duser/orders22")
+    public List<Order> getOrders22() {
+        return orderMapper.selectAllOrders22();
+    }
+
+    @GetMapping("/duser/orders3")
+    public List<Order> getOrders3() {
+        return orderMapper.selectAllOrders3();
+    }
+
+    @PutMapping("/duser/change/{id}")
+    public String changeStatus(@PathVariable("id") String id, @RequestParam("status") String status) {
+        switch (status) {
+            case "운송하기":
+                orderMapper.updateTo픽업전(id);
+                break;
+            case "운송시작":
+                orderMapper.updateTo운송중(id);
+                break;
+            case "운송완료":
+                orderMapper.updateTo운송완료(id);
+                break;
+        }
+        System.out.println(status);
+        return "변경완료Good";
     }
 
 }
